@@ -53,7 +53,7 @@ public class AddEmployeeFragment extends Fragment {
         checkThursday = root.findViewById(R.id.checkThursday);
         addNewBtn = root.findViewById(R.id.addNewBtn);
         database = FirebaseDatabase.getInstance();
-
+//I try to make a commit
         addNewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
