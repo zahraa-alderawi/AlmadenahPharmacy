@@ -1,19 +1,42 @@
-package com.apps.almadenahpharmacy;
+package com.apps.almadenahpharmacy.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Employee implements Serializable {
+public class Employee implements Serializable
+
+{
+    int id ;
     String name;
     int hoursCount;
     int daysCount;
-    ArrayList<Day> daysNames ;
+    ArrayList<String> daysNames ;
+    public Employee() {
+    }
 
-    public Employee(String name, int hoursCount, int daysCount, ArrayList<Day> daysNames) {
+    public Employee(String name, int hoursCount, int daysCount, ArrayList<String> daysNames) {
         this.name = name;
         this.hoursCount = hoursCount;
         this.daysCount = daysCount;
         this.daysNames = daysNames;
+    }
+
+    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames) {
+        this.id = id;
+        this.name = name;
+        this.hoursCount = hoursCount;
+        this.daysCount = daysCount;
+        this.daysNames = daysNames;
+
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,11 +63,13 @@ public class Employee implements Serializable {
         this.daysCount = daysCount;
     }
 
-    public ArrayList<Day> getDaysNames() {
+    public ArrayList<String> getDaysNames() {
         return daysNames;
     }
 
-    public void setDaysNames(ArrayList<Day> daysNames) {
+    public void setDaysNames(ArrayList<String> daysNames) {
         this.daysNames = daysNames;
     }
+
+
 }

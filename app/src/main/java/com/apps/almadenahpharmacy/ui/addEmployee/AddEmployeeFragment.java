@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.apps.almadenahpharmacy.Day;
-import com.apps.almadenahpharmacy.Employee;
+import com.apps.almadenahpharmacy.Models.Employee;
 import com.apps.almadenahpharmacy.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -36,7 +40,7 @@ public class AddEmployeeFragment extends Fragment {
     private CheckBox checkWednesday;
     private CheckBox checkThursday;
     private MaterialButton addNewBtn;
-
+    int lastKey =0;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
@@ -53,22 +57,38 @@ public class AddEmployeeFragment extends Fragment {
         checkThursday = root.findViewById(R.id.checkThursday);
         addNewBtn = root.findViewById(R.id.addNewBtn);
         database = FirebaseDatabase.getInstance();
-//I try to make a commit
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final Query lastQuery = reference.child("Employees").orderByKey().limitToLast(1);
+        lastQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                     lastKey = Integer.parseInt(  snap.getKey()+"");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle possible errors.
+            }
+        });
+
         addNewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Day> days = new ArrayList<>();
-                if (checkSaturday.isChecked()){days.add(new Day("السبت")); }
-                 if (checkSunday.isChecked()){days.add(new Day("الأحد")); }
-                 if (checkMonday.isChecked()){days.add(new Day("الاثنين")); }
-                 if (checkTuesday.isChecked()){days.add(new Day("الثلاثاء")); }
-                 if (checkWednesday.isChecked()){days.add(new Day("الأربعاء")); }
-                 if (checkThursday.isChecked()){days.add(new Day("الخميس")); }
+                final ArrayList<String> days = new ArrayList<>();
+                if (checkSaturday.isChecked()){days.add("السبت"); }
+                 if (checkSunday.isChecked()){days.add("الأحد"); }
+                 if (checkMonday.isChecked()){days.add("الاثنين"); }
+                 if (checkTuesday.isChecked()){days.add("الثلاثاء"); }
+                 if (checkWednesday.isChecked()){days.add("الأربعاء"); }
+                 if (checkThursday.isChecked()){days.add("الخميس"); }
 
                     if (days.size()>0){
-                        Employee employee = new Employee(editNameAdd.getText().toString(),Integer.parseInt(editHoursCountAdd.getText().toString()),
+                        Employee employee = new Employee(lastKey+1,editNameAdd.getText().toString(),Integer.parseInt(editHoursCountAdd.getText().toString()),
                                 Integer.parseInt(editDaysCountAdd.getText().toString()),days);
-                        database.getReference().child("Employees").push().setValue(employee).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        database.getReference().child("Employees").child((lastKey+1)+"").setValue(employee).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(getActivity(), "تم إضافة الموظف بنجاح", Toast.LENGTH_SHORT).show();

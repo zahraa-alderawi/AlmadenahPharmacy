@@ -4,9 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.home.HomeFragment" >
 
     <ListView
+        android:id="@+id/listEmpRegister"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:background="@color/colorYellow"
+        android:paddingTop="10dp"
+        android:dividerHeight="0dp"
+
+       />
 </LinearLayout>
