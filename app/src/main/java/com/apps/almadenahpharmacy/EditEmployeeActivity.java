@@ -40,7 +40,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
         Employee employee = (Employee) getIntent().getSerializableExtra("Employee");
         final ArrayList<String> days = employee.getDaysNames();
         final int id = employee.getId();
-
+//try to make new commit
         editNameEdit.setText(employee.getName());
         editHoursCountEdit.setText(employee.getHoursCount()+"");
         editDaysCountEdit.setText(employee.getDaysCount()+"");
