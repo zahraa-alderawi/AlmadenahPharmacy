@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -29,11 +30,11 @@ public class EmployeeRecordsFragment extends Fragment {
         employeeRecordsViewModel =
                 ViewModelProviders.of(this).get(EmployeeRecordsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_employee_records, container, false);
-        ListView list = root.findViewById(R.id.listEmpRecorders);
+        GridView gridEmpRecorders = root.findViewById(R.id.gridEmpRecorders);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final ArrayList<Employee> data = new ArrayList<>();
         final EmployeeRecordersAdapter adapter = new EmployeeRecordersAdapter(data, getActivity());
-        list.setAdapter(adapter);
+        gridEmpRecorders.setAdapter(adapter);
 
         database.getReference().child("Employees").addValueEventListener(new ValueEventListener() {
             @Override
@@ -43,6 +44,7 @@ public class EmployeeRecordsFragment extends Fragment {
                     Employee employee = new Employee();
                     employee.setId(Integer.parseInt(snapshot.child("id").getValue().toString()));
                     employee.setName(snapshot.child("name").getValue().toString());
+                    employee.setGender(snapshot.child("gender").getValue().toString());
                     employee.setDaysCount(Integer.parseInt(snapshot.child("daysCount").getValue().toString()));
                     employee.setHoursCount(Integer.parseInt(snapshot.child("hoursCount").getValue().toString()));
                     employee.setDaysNames((ArrayList<String>) snapshot.child("daysNames").getValue());

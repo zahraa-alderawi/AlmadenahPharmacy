@@ -11,6 +11,7 @@ public class Employee implements Serializable
     int hoursCount;
     int daysCount;
     ArrayList<String> daysNames ;
+    String gender;
     public Employee() {
     }
 
@@ -29,6 +30,23 @@ public class Employee implements Serializable
         this.daysNames = daysNames;
 
 
+    }
+
+    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames, String gender) {
+        this.id = id;
+        this.name = name;
+        this.hoursCount = hoursCount;
+        this.daysCount = daysCount;
+        this.daysNames = daysNames;
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getId() {

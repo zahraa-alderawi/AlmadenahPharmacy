@@ -5,8 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/listEmpRecorders"
+    <GridView
+        android:id="@+id/gridEmpRecorders"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:outlineAmbientShadowColor="@color/colorYellow"
+        android:numColumns="2">
+    </GridView>
+
 </LinearLayout>

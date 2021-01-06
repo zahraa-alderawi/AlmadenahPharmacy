@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="rtl"
-    android:paddingTop="20dp"
-    xmlns:card_view="http://schemas.android.com/tools">
+    android:layout_marginTop="10dp"
+    android:padding="10dp"
+    android:layoutDirection="rtl">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        card_view:cardBackgroundColor="#fff"
-        card_view:cardCornerRadius="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/colorAccent"
-        card_view:cardElevation="4dp">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="2dp"
+        android:backgroundTint="@color/colorYellow">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageEmp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                card_view:srcCompat="@tools:sample/avatars" />
+                android:id="@+id/imageEmpRec"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:paddingEnd="10dp"
+                app:srcCompat="@drawable/pharmacist_female" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,32 +38,34 @@
                     android:id="@+id/rowNameEmp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:padding="10dp"
                     android:paddingTop="20dp"
-                    android:paddingBottom="10dp"
+                    android:gravity="center"
                     android:text="إسم الموظف"
-                    android:textColor="#fff"
-                    android:textSize="25sp" />
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
-                    <Button
+                    <ImageView
                         android:id="@+id/butGoToEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="تعديل" />
+                        android:layout_width="35dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/edit_employee" />
 
-                    <Button
+                    <ImageView
                         android:id="@+id/butDelete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="حذف" />
+                        android:layout_width="35dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="30dp"
+                        app:srcCompat="@drawable/delete_employee" />
                 </LinearLayout>
             </LinearLayout>
 
