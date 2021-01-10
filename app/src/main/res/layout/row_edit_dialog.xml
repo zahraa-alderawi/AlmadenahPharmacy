@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="rtl"
     android:textDirection="rtl"
     android:orientation="vertical">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:textDirection="rtl"
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -88,6 +93,25 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editDaysCountEditDialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="سعر الساعة الاضافية بالشيكل"
+            android:textColorHint="#000"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:hintTextColor="#000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editExtraHourPriceDialog"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="numberDecimal"
@@ -190,3 +214,4 @@
 
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

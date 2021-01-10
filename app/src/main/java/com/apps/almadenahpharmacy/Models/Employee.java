@@ -10,28 +10,22 @@ public class Employee implements Serializable
     String name;
     int hoursCount;
     int daysCount;
-    ArrayList<String> daysNames ;
     String gender;
+    ArrayList<String> daysNames ;
+    int extraHourPrice ;
     public Employee() {
     }
 
-    public Employee(String name, int hoursCount, int daysCount, ArrayList<String> daysNames) {
-        this.name = name;
-        this.hoursCount = hoursCount;
-        this.daysCount = daysCount;
-        this.daysNames = daysNames;
-    }
 
-    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames) {
+    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames, String gender,int extraHourPrice) {
         this.id = id;
         this.name = name;
         this.hoursCount = hoursCount;
         this.daysCount = daysCount;
         this.daysNames = daysNames;
-
-
+        this.gender = gender;
+        this.extraHourPrice = extraHourPrice;
     }
-
     public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames, String gender) {
         this.id = id;
         this.name = name;
@@ -39,6 +33,16 @@ public class Employee implements Serializable
         this.daysCount = daysCount;
         this.daysNames = daysNames;
         this.gender = gender;
+    }
+
+
+
+    public int getExtraHourPrice() {
+        return extraHourPrice;
+    }
+
+    public void setExtraHourPrice(int extraHourPrice) {
+        this.extraHourPrice = extraHourPrice;
     }
 
     public String getGender() {

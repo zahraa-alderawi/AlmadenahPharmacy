@@ -1,6 +1,7 @@
 package com.apps.almadenahpharmacy.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.apps.almadenahpharmacy.EmployeeDetailsActivity;
 import com.apps.almadenahpharmacy.Models.Employee;
 import com.apps.almadenahpharmacy.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -64,9 +66,18 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
         rowNameEmp.setText(data.get(i).getName());
         if (data.get(i).getGender().equals("أنثى")){
             imageEmpRec.setImageResource(R.drawable.pharmacist_female);
-        }else if (data.get(i).getGender().equals("ذكر")){
+        }
+        else if (data.get(i).getGender().equals("ذكر")){
             imageEmpRec.setImageResource(R.drawable.pharmacist_male);
         }
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, EmployeeDetailsActivity.class);
+                intent.putExtra("employee" , data.get(i));
+                activity.startActivity(intent);
+            }
+        });
         butGoToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +91,7 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                 final EditText editNameEditDialog = dialogView.findViewById(R.id.editNameEditDialog);
                 final EditText editHoursCountEditDialog = dialogView.findViewById(R.id.editHoursCountEditDialog);
                 final EditText editDaysCountEditDialog = dialogView.findViewById(R.id.editDaysCountEditDialog);
+                final EditText editExtraHourPriceDialog = dialogView.findViewById(R.id.editExtraHourPriceDialog);
 
                 final CheckBox checkSaturdayEditDialog = dialogView.findViewById(R.id.checkSaturdayEditDialog);
                 final CheckBox checkSundayEditDialog = dialogView.findViewById(R.id.checkSundayEditDialog);
@@ -97,6 +109,7 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                 editNameEditDialog.setText(data.get(i).getName());
                 editHoursCountEditDialog.setText(data.get(i).getHoursCount() + "");
                 editDaysCountEditDialog.setText(data.get(i).getDaysCount() + "");
+                editExtraHourPriceDialog.setText(data.get(i).getExtraHourPrice() + "");
 
                 if (data.get(i).getGender().equals("ذكر")) {
                     radioGroupEditDialog.check(R.id.radioButMaleEdit);
@@ -150,7 +163,8 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                             int selectedId = radioGroupEditDialog.getCheckedRadioButtonId();
                             RadioButton genderRadioButton = (RadioButton) dialogView.findViewById(selectedId);
                             Employee employee = new Employee(id, editNameEditDialog.getText().toString(), Integer.parseInt(editHoursCountEditDialog.getText().toString()),
-                                    Integer.parseInt(editDaysCountEditDialog.getText().toString()),days, genderRadioButton.getText().toString());
+                                    Integer.parseInt(editDaysCountEditDialog.getText().toString()),days, genderRadioButton.getText().toString(),
+                                    Integer.parseInt(editExtraHourPriceDialog.getText().toString()));
                             database.getReference().child("Employees").child(id + "").setValue(employee).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -163,8 +177,6 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
 
                     }
                 });
-
-
             }
         });
         butDelete.setOnClickListener(new View.OnClickListener() {

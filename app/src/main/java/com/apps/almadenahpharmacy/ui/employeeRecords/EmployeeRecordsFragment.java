@@ -47,6 +47,7 @@ public class EmployeeRecordsFragment extends Fragment {
                     employee.setGender(snapshot.child("gender").getValue().toString());
                     employee.setDaysCount(Integer.parseInt(snapshot.child("daysCount").getValue().toString()));
                     employee.setHoursCount(Integer.parseInt(snapshot.child("hoursCount").getValue().toString()));
+                    employee.setExtraHourPrice(Integer.parseInt(snapshot.child("extraHourPrice").getValue().toString()));
                     employee.setDaysNames((ArrayList<String>) snapshot.child("daysNames").getValue());
                     data.add(employee);
 

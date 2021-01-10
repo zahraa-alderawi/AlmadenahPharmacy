@@ -1,6 +1,8 @@
 package com.apps.almadenahpharmacy.ui.home;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -8,27 +10,39 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.apps.almadenahpharmacy.Adapters.HomeRegisterAdapter;
+import com.apps.almadenahpharmacy.EmployeeDetailsActivity;
 import com.apps.almadenahpharmacy.Models.Employee;
 import com.apps.almadenahpharmacy.OnIntentReceived;
 import com.apps.almadenahpharmacy.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,16 +56,24 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+
 public class HomeFragment extends Fragment implements  OnIntentReceived {
 
     private HomeViewModel homeViewModel;
     Uri uri;
-    int saturday ;
-    int sunday ;
-    int monday ;
-    int tuesday ;
-    int wednesday ;
-    int thursday ;
+    public static final int CAMERA_PERM_CODE = 101;
+    public static final int CAMERA_REQUEST_CODE = 102;
+    public static final int GALLERY_REQUEST_CODE = 105;
+    String currentPhotoPath;
+    StorageReference storageReference;
+    Uri uriImage ;
+    int empId ;
+    int shiftMonth ;
+    int shiftDay ;
+    String shiftImageType;
+    ProgressBar progressBar ;
+    LinearLayout linearHome ;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -71,21 +93,27 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
                 }
             }
         });*/
-        countOfHoursTheEmployeesMustWorkEveryMonth();
 
-        ListView list = root.findViewById(R.id.listEmpRegister);
+        GridView gridEmpRegister = root.findViewById(R.id.gridEmpRegister);
+         linearHome = root.findViewById(R.id.linearHome);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         final ArrayList<Employee> data = new ArrayList<>();
         final HomeRegisterAdapter adapter = new HomeRegisterAdapter(data, getActivity(), HomeFragment.this);
-        list.setAdapter(adapter);
+        gridEmpRegister.setAdapter(adapter);
         database.getReference().child("Employees").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 data.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Employee employee = new Employee();
-                    employee.setName(snapshot.child("name").getValue().toString());
                     employee.setId(Integer.parseInt(snapshot.child("id").getValue().toString()));
+                    employee.setName(snapshot.child("name").getValue().toString());
+                    employee.setGender(snapshot.child("gender").getValue().toString());
+                    employee.setDaysCount(Integer.parseInt(snapshot.child("daysCount").getValue().toString()));
+                    employee.setHoursCount(Integer.parseInt(snapshot.child("hoursCount").getValue().toString()));
+                    employee.setDaysNames((ArrayList<String>) snapshot.child("daysNames").getValue());
                     data.add(employee);
 
                 }
@@ -94,7 +122,6 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
             }
         });
 
@@ -104,6 +131,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
     }
 
     public void checkPermission(String permission, int requestCode) {
+                                //Manifest.permission.CAMERA, 2
         // Checking if permission is not granted
         if (ContextCompat.checkSelfPermission(
                 getActivity(),
@@ -119,102 +147,123 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
 
 
     @Override
-    public void onIntent(Intent i, int resultCode) {
-    // here i wil write the code to take picture/save and pick
+    public void onIntent(int id  , int month ,int day , String imageType ) {
+        empId = id;
+        shiftMonth = month ;
+        shiftDay = day ;
+        shiftImageType = imageType ;
+        linearHome.setVisibility(View.VISIBLE);
+        askCameraPermissions();
 
+    }
 
-        startActivityForResult(i,2);
+    private void askCameraPermissions() {
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+        }else {
+            dispatchTakePictureIntent();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == CAMERA_PERM_CODE){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                dispatchTakePictureIntent();
+            }else {
+                Toast.makeText(getActivity(), "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                        "com.apps.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
+    }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==2){
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Toast.makeText(getActivity(), data.getData()+"11", Toast.LENGTH_SHORT).show();
-        }
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                File f = new File(currentPhotoPath);
+                //showImage.setImageURI(Uri.fromFile(f));
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                getActivity().sendBroadcast(mediaScanIntent);
 
-    }
-    public void takePhoto() {
-        String imageFileName =  "155"; //make a better file name
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = null;
-        try {
-            image = File.createTempFile(imageFileName,
-                    ".jpg",
-                    storageDir
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                uploadImageToFirebase(f.getName(), contentUri);
 
-        uri = Uri.fromFile(image);
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(takePhotoIntent,1);
-
-    }
-
-    public void countOfHoursTheEmployeesMustWorkEveryMonth() {
-        DateFormat dateFormat = new SimpleDateFormat("EEE, dd/MM/yyyy");
-        String currentDateAndTime = dateFormat.format(new Date());
-
-        try {
-            Date date  = dateFormat.parse(currentDateAndTime);
-            final String year= (String) android.text.format.DateFormat.format("yyy", date);
-            final int yearInt = Integer.parseInt(year);
-            final String month= (String) android.text.format.DateFormat.format("MM", date);
-            final int monthInt= Integer.parseInt(month);
-           // final String day= (String) android.text.format.DateFormat.format("EEEE", date);
-
-            Calendar calendar = new GregorianCalendar(yearInt, monthInt-1, 1);
-            int daysInMonth= calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-            for (int i=1 ;i<=daysInMonth ;i++){
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DAY_OF_MONTH, i); //Set Day of the Month, 1..31
-                cal.set(Calendar.MONTH,monthInt-1); //Set month, starts with JANUARY = 0
-                cal.set(Calendar.YEAR,yearInt);
-
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                if (dayOfWeek==7) {
-                    saturday++;
-                }
-                else if (dayOfWeek==1) {
-                    sunday++;
-                }
-                else if (dayOfWeek==2) {
-                    monday++;
-                }
-                else if (dayOfWeek==3) {
-                    tuesday++;
-                }
-                else if (dayOfWeek==4) {
-                    wednesday++;
-                }
-                else if (dayOfWeek==5) {
-                    thursday++;
-                }
 
             }
-            HashMap<String,Integer> countOfDays = new HashMap<>();
-            countOfDays.put("Saturdays",saturday);
-            countOfDays.put("Sundays",sunday);
-            countOfDays.put("Mondays",monday);
-            countOfDays.put("Tuesdays",tuesday);
-            countOfDays.put("Wednesday",wednesday);
-            countOfDays.put("Thursday",thursday);
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            database.getReference().child(year).child(month).setValue(countOfDays);
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
 
 
+    }
+
+    private void uploadImageToFirebase(String name, Uri contentUri) {
+        final StorageReference image = storageReference.child("pictures/" + name);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        database.getReference().child("Shifts").child(empId+"").child(shiftMonth+"").
+                                child(shiftDay+"").child(shiftImageType).setValue(uri+"");
+                        linearHome.setVisibility(View.GONE);
+
+
+                    }
+                });
+
+                Toast.makeText(getActivity(), "Image Is Uploaded.", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), e.getMessage()+"", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
+
+
 
 
 

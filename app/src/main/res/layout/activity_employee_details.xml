@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:textDirection="rtl"
+    tools:context=".EmployeeDetailsActivity">
+    <TextView
+        android:id="@+id/txtEmpName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="اسم الموظف"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" عدد الساعات المطلوبة لهذا الشهر" />
+
+        <TextView
+            android:id="@+id/txtHoursRequired"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="0" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="سعر الساعة الاضافية" />
+
+        <TextView
+            android:id="@+id/txtExtraHourPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="0" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="الوقت الذي داومه خلال الشهر" />
+
+        <TextView
+            android:id="@+id/txtHoursDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="0" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="عدد الساعات الإضافية" />
+
+        <TextView
+            android:id="@+id/txtHoursExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="0" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="الراتب الاضافي بالشيكل" />
+
+        <TextView
+            android:id="@+id/txtPriceExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="0" />
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/butShowThisMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:text="عرض سجل الدوام لهذا الشهر"
+        android:textSize="18sp"
+        app:cornerRadius="10dp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/butShowLastMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:text=" عرض سجل الدوام للشهر السابق"
+        android:textSize="18sp"
+        app:cornerRadius="10dp" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:src="@drawable/logo"
+        android:visibility="gone"
+        android:id="@+id/showImage"/>
+
+</LinearLayout>
