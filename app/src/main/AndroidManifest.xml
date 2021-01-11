@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EmployeeDetailsActivity"></activity>
+        <activity android:name=".EmployeeShiftsActivity"></activity>
+        <activity android:name=".EmployeeDetailsActivity" />
         <activity android:name=".SplashActivity" />
         <activity
             android:name=".MainActivity"
@@ -44,9 +45,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

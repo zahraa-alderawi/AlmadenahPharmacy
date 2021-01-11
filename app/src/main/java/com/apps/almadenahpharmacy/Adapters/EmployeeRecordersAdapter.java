@@ -185,7 +185,7 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 final Query applesQuery = ref.child("Employees").orderByChild("id").equalTo(data.get(i).getId());
-                final View dialogView = LayoutInflater.from(activity).inflate(R.layout.my_dialog, viewGroup, false);
+                final View dialogView = LayoutInflater.from(activity).inflate(R.layout.row_delete_dialog, viewGroup, false);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setView(dialogView);
                 final AlertDialog alertDialog = builder.create();

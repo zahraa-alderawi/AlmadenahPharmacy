@@ -133,11 +133,5 @@
         android:text=" عرض سجل الدوام للشهر السابق"
         android:textSize="18sp"
         app:cornerRadius="10dp" />
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/logo"
-        android:visibility="gone"
-        android:id="@+id/showImage"/>
 
 </LinearLayout>
