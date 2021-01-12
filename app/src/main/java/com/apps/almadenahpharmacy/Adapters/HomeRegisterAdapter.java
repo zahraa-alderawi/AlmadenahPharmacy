@@ -125,7 +125,7 @@ public class HomeRegisterAdapter extends BaseAdapter {
                     final String day= (String) DateFormat.format("dd", date);
                     final int dayInt = Integer.parseInt(day);
                     String time= (String) DateFormat.format("HH:mm", date);
-                    final Shift shift = new Shift(time,timeStamp,"image1",null,0,null,null,0);
+                    final Shift shift = new Shift(time,timeStamp,"image1",null,0,"image2",null,0,monthInt,dayInt);
                     rootRef.child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {

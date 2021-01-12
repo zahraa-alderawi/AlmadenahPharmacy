@@ -56,7 +56,7 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
     private TextView txtExtraHourPrice;
     private MaterialButton butShowThisMonth;
     private MaterialButton butShowLastMonth;
-    ImageView showImage ;
+    int monthInt ;
     int requiredHours;
     long doneTime ;
     long extraTime;
@@ -83,7 +83,7 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
         try {
             Date  date = format.parse(currentDateAndTime);
             final String month= (String) DateFormat.format("MM", date);
-            final int monthInt = Integer.parseInt(month);
+             monthInt = Integer.parseInt(month);
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             database.getReference().child("EmployeesHours").child(employee.getId()+"").child(monthInt+"").
                     addListenerForSingleValueEvent(new ValueEventListener() {
@@ -130,9 +130,24 @@ public class EmployeeDetailsActivity extends AppCompatActivity {
         butShowThisMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(EmployeeDetailsActivity.this,EmployeeShiftsActivity.class);
+                intent.putExtra("id" , employee.getId());
+                intent.putExtra("month" , monthInt);
+                startActivity(intent);
 
             }
         });
+
+        butShowLastMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EmployeeDetailsActivity.this,EmployeeShiftsActivity.class);
+                intent.putExtra("id" , employee.getId());
+                intent.putExtra("month" , monthInt-1);
+                startActivity(intent);
+            }
+        });
+
 
     }
 

@@ -14,11 +14,13 @@ public class Shift {
 
     String  spendingTimeInWork;
     long  minutesCountInWork;
-
+      int month ;
+      int day ;
     public Shift() {
     }
 
-    public Shift(String timeAttendance, long timeStampAttendance, String imageAttendance, String timeLeave, long timeStampLeave, String imageLeave, String spendingTimeInWork, long minutesCountInWork) {
+    public Shift(String timeAttendance, long timeStampAttendance, String imageAttendance, String timeLeave, long timeStampLeave,
+                 String imageLeave, String spendingTimeInWork, long minutesCountInWork,int month , int day) {
         this.timeAttendance = timeAttendance;
         this.timeStampAttendance = timeStampAttendance;
         this.imageAttendance = imageAttendance;
@@ -27,6 +29,25 @@ public class Shift {
         this.imageLeave = imageLeave;
         this.spendingTimeInWork = spendingTimeInWork;
         this.minutesCountInWork = minutesCountInWork;
+        this.month = month;
+        this.day = day ;
+
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 
     public long getTimeStampAttendance() {
