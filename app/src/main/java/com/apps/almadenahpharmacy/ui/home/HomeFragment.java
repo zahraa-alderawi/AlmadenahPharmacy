@@ -213,7 +213,6 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
-        Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
         return image;
     }
     @Override
