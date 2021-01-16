@@ -200,6 +200,7 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
                                     appleSnapshot.getRef().removeValue();
+                                    alertDialog.cancel();
                                 }
                             }
 

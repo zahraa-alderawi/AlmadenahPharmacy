@@ -1,28 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="300dp"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    android:textDirection="rtl">
 
-    <TextView
-        android:id="@+id/txtShiftDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
 
-    <ImageView
-        android:id="@+id/imgShiftAttendance"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/colorYellow"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:id="@+id/txtShiftDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="التاريخ"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
 
-    <ImageView
-        android:id="@+id/imgShiftLeave"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:srcCompat="@tools:sample/avatars" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorYellow"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="10dp">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.github.florent37.shapeofview.shapes.RoundRectView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:shape_roundRect_bottomRightRadius="10dp"
+                        app:shape_roundRect_topRightRadius="10dp"
+                        app:shape_roundRect_topLeftRadius="10dp"
+                        app:shape_roundRect_bottomLeftRadius="10dp"
+                        >
+                        <ImageView
+                            android:id="@+id/imgShiftAttendance"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="fitXY"
+                            android:rotation="90"
+                            card_view:srcCompat="@drawable/persoon"
+                            />
+                        <ProgressBar
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+                </FrameLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorYellow"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="10dp">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.github.florent37.shapeofview.shapes.RoundRectView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:shape_roundRect_bottomRightRadius="10dp"
+                        app:shape_roundRect_topRightRadius="10dp"
+                        app:shape_roundRect_topLeftRadius="10dp"
+                        app:shape_roundRect_bottomLeftRadius="10dp"
+                        >
+                        <ImageView
+                            android:id="@+id/imgShiftLeave"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="fitXY"
+                            android:rotation="90"
+                            card_view:srcCompat="@drawable/persoon"
+                            />
+                        <ProgressBar
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+                </FrameLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -54,6 +55,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class HomeRegisterAdapter extends BaseAdapter {
@@ -99,8 +101,8 @@ public class HomeRegisterAdapter extends BaseAdapter {
     public View getView(final int i, View view, ViewGroup viewGroup) {
         final View v = LayoutInflater.from(activity).inflate(R.layout.raw_home_register, null, false);
         TextView rowNameEmp = v.findViewById(R.id.employeeNameRegister);
-        ImageView imgCome =  v.findViewById(R.id.btnCome);
-        ImageView imgLeft =  v.findViewById(R.id.btnLeft);
+        Button imgCome =  v.findViewById(R.id.btnCome);
+        Button imgLeft =  v.findViewById(R.id.btnLeft);
         ImageView imageEmpHome =  v.findViewById(R.id.imageEmpHome);
         rowNameEmp.setText(data.get(i).getName());
         if (data.get(i).getGender().equals("أنثى")){
@@ -112,11 +114,11 @@ public class HomeRegisterAdapter extends BaseAdapter {
         imgCome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 allHours = 0;
                 final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                long timeStamp = System.currentTimeMillis();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'Z'");
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+              //  long timeStamp = System.currentTimeMillis();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.US);
                 String currentDateAndTime = format.format(new Date());
                 try {
                     Date date = format.parse(currentDateAndTime);
@@ -124,8 +126,8 @@ public class HomeRegisterAdapter extends BaseAdapter {
                     final int monthInt = Integer.parseInt(month);
                     final String day= (String) DateFormat.format("dd", date);
                     final int dayInt = Integer.parseInt(day);
-                    String time= (String) DateFormat.format("HH:mm", date);
-                    final Shift shift = new Shift(time,timeStamp,"image1",null,0,"image2",null,0,monthInt,dayInt);
+                   // String time= (String) DateFormat.format("HH:mm", date);
+                    final Shift shift = new Shift(0,"image1",0,"image2",null,0,monthInt,dayInt);
                     rootRef.child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -136,7 +138,9 @@ public class HomeRegisterAdapter extends BaseAdapter {
                             else {
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").setValue(shift);
+                                database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("timeStampAttendance").setValue(ServerValue.TIMESTAMP);
                                 listener.onIntent(data.get(i).getId() , monthInt,dayInt , "imageAttendance");
+
 
                                 rootRef.child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -181,9 +185,8 @@ public class HomeRegisterAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final long timeStamp = System.currentTimeMillis();
+              //  final long timeStamp = System.currentTimeMillis();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS'Z'");
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
                 String currentDateAndTime = format.format(new Date());
                 try {
                     Date date = format.parse(currentDateAndTime);
@@ -191,18 +194,17 @@ public class HomeRegisterAdapter extends BaseAdapter {
                     final int monthInt = Integer.parseInt(month);
                     final String day= (String) DateFormat.format("dd", date);
                     final int dayInt = Integer.parseInt(day);
-                    final String time= (String) DateFormat.format("HH:mm", date);
                     DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
                     rootRef.child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.hasChild(day+"")) {
-                            if (snapshot.child(day+"").hasChild("spendingTimeInWork")) {
+                                if (snapshot.child(day+"").hasChild("minutesCountInWork")) {
                                 Toast.makeText(activity, "لقد قمت بتسجيل الانصراف لهذا اليوم", Toast.LENGTH_SHORT).show();
 
-                            }
-                            else {
-                                database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"")
+                                     }
+                                else {
+                              /*  database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"")
                                         .child(day+"").child("timeStampAttendance").addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -211,13 +213,21 @@ public class HomeRegisterAdapter extends BaseAdapter {
                                         long differentMinutes =  (differentBetweenTimes/(1000*60)); //timestamp to minutes
                                         //   long differentMinutes =  (differentBetweenTimes/(1000*60)); timestamp to hours
                                         int hours = (int) (differentMinutes / 60);
-                                        int minutes = (int) (differentMinutes % 60);
+                                        int minutes = (int) (differentMinutes % 60); */
 
-                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("timeLeave").setValue(time);
                                         database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("imageLeave").setValue("image2");
-                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("timeStampLeave").setValue(timeStamp);
-                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("spendingTimeInWork").setValue(hours+":"+minutes);
-                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("minutesCountInWork").setValue(differentMinutes);
+                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("timeStampLeave").setValue(ServerValue.TIMESTAMP);
+
+                                        database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                long leftTimeStamp = Long.parseLong(dataSnapshot.child("timeStampLeave").getValue().toString());
+                                                long timeStampAttendance = Long.parseLong(dataSnapshot.child("timeStampAttendance").getValue().toString());
+                                                final long differentBetweenTimes = leftTimeStamp - timeStampAttendance ;
+                                                long differentMinutes =  (differentBetweenTimes/(1000*60));
+                                                database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("minutesCountInWork").setValue(differentMinutes);
+
+
 
                                         database.getReference().child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override

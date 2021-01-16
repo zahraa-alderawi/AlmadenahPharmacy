@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".EmployeeShiftsActivity">
 
-    <ListView
-        android:id="@+id/listEmpShifts"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recEmpShifts"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

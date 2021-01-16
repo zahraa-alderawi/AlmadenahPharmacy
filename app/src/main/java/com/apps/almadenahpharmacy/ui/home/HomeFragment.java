@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
             }
         });*/
 
-        GridView gridEmpRegister = root.findViewById(R.id.gridEmpRegister);
+        ListView gridEmpRegister = root.findViewById(R.id.gridEmpRegister);
          linearHome = root.findViewById(R.id.linearHome);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 dispatchTakePictureIntent();
             }else {
-                Toast.makeText(getActivity(), "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "يجب إطاء التطبيق صلاحية الوصول للكاميرا", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -185,6 +185,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+
             } catch (IOException ex) {
 
             }
@@ -194,6 +195,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
                         "com.apps.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+
             }
         }
     }
@@ -211,6 +213,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
+        Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
         return image;
     }
     @Override
