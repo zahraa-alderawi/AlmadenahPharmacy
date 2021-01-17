@@ -101,8 +101,8 @@ public class HomeRegisterAdapter extends BaseAdapter {
     public View getView(final int i, View view, ViewGroup viewGroup) {
         final View v = LayoutInflater.from(activity).inflate(R.layout.raw_home_register, null, false);
         TextView rowNameEmp = v.findViewById(R.id.employeeNameRegister);
-        Button imgCome =  v.findViewById(R.id.btnCome);
-        Button imgLeft =  v.findViewById(R.id.btnLeft);
+        com.google.android.material.button.MaterialButton imgCome =  v.findViewById(R.id.btnCome);
+        com.google.android.material.button.MaterialButton imgLeft =  v.findViewById(R.id.btnLeft);
         ImageView imageEmpHome =  v.findViewById(R.id.imageEmpHome);
         rowNameEmp.setText(data.get(i).getName());
         if (data.get(i).getGender().equals("أنثى")){

@@ -11,7 +11,8 @@
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_baseline_person_add_24"
-            android:title="إضافة موظف" />
+            android:title="إضافة موظف"
+            />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/clipboards"

@@ -55,6 +55,11 @@
                         app:shape_roundRect_topLeftRadius="10dp"
                         app:shape_roundRect_bottomLeftRadius="10dp"
                         >
+
+                        <ProgressBar
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                         <ImageView
                             android:id="@+id/imgShiftAttendance"
                             android:layout_width="match_parent"
@@ -63,10 +68,6 @@
                             android:rotation="90"
                             card_view:srcCompat="@drawable/persoon"
                             />
-                        <ProgressBar
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
                     </com.github.florent37.shapeofview.shapes.RoundRectView>
 
                 </FrameLayout>
@@ -92,6 +93,10 @@
                         app:shape_roundRect_topLeftRadius="10dp"
                         app:shape_roundRect_bottomLeftRadius="10dp"
                         >
+                        <ProgressBar
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                         <ImageView
                             android:id="@+id/imgShiftLeave"
                             android:layout_width="match_parent"
@@ -100,10 +105,7 @@
                             android:rotation="90"
                             card_view:srcCompat="@drawable/persoon"
                             />
-                        <ProgressBar
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+
                     </com.github.florent37.shapeofview.shapes.RoundRectView>
 
                 </FrameLayout>

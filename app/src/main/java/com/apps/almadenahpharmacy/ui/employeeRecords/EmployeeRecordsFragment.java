@@ -30,6 +30,7 @@ public class EmployeeRecordsFragment extends Fragment {
         employeeRecordsViewModel =
                 ViewModelProviders.of(this).get(EmployeeRecordsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_employee_records, container, false);
+
         GridView gridEmpRecorders = root.findViewById(R.id.gridEmpRecorders);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final ArrayList<Employee> data = new ArrayList<>();

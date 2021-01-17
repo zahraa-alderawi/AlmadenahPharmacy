@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
+
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1);
         checkPermission(Manifest.permission.CAMERA, 2);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
