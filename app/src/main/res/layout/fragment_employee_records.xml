@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:outlineAmbientShadowColor="@color/colorYellow"
         android:nestedScrollingEnabled="true"
+        android:scrollbars="none"
         android:numColumns="2">
     </GridView>
 

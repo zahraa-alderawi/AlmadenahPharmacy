@@ -33,10 +33,12 @@ import com.apps.almadenahpharmacy.OnIntentReceived;
 import com.apps.almadenahpharmacy.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -62,17 +64,7 @@ public class HomeRegisterAdapter extends BaseAdapter {
     ArrayList<Employee> data;
     Activity activity;
     OnIntentReceived listener;
-    Uri uri;
-    int saturday;
-    int sunday;
-    int monday;
-    int tuesday;
-    int wednesday;
-    int thursday;
-    int allHours ;
-
-
-
+    int lastShiftForEmp;
 
 
     public HomeRegisterAdapter(ArrayList<Employee> data, Activity activity , OnIntentReceived listener) {
@@ -100,9 +92,10 @@ public class HomeRegisterAdapter extends BaseAdapter {
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         final View v = LayoutInflater.from(activity).inflate(R.layout.raw_home_register, null, false);
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         TextView rowNameEmp = v.findViewById(R.id.employeeNameRegister);
-        com.google.android.material.button.MaterialButton imgCome =  v.findViewById(R.id.btnCome);
-        com.google.android.material.button.MaterialButton imgLeft =  v.findViewById(R.id.btnLeft);
+        com.google.android.material.button.MaterialButton btnCome =  v.findViewById(R.id.btnCome);
+        com.google.android.material.button.MaterialButton btnLeft =  v.findViewById(R.id.btnLeft);
         ImageView imageEmpHome =  v.findViewById(R.id.imageEmpHome);
         rowNameEmp.setText(data.get(i).getName());
         if (data.get(i).getGender().equals("أنثى")){
@@ -111,12 +104,9 @@ public class HomeRegisterAdapter extends BaseAdapter {
         else if (data.get(i).getGender().equals("ذكر")){
             imageEmpHome.setImageResource(R.drawable.pharmacist_male);
         }
-        imgCome.setOnClickListener(new View.OnClickListener() {
+        btnCome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                allHours = 0;
-                final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
               //  long timeStamp = System.currentTimeMillis();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.US);
                 String currentDateAndTime = format.format(new Date());
@@ -126,51 +116,27 @@ public class HomeRegisterAdapter extends BaseAdapter {
                     final int monthInt = Integer.parseInt(month);
                     final String day= (String) DateFormat.format("dd", date);
                     final int dayInt = Integer.parseInt(day);
-                   // String time= (String) DateFormat.format("HH:mm", date);
-                    final Shift shift = new Shift(0,"image1",0,"image2",null,0,monthInt,dayInt);
-                    rootRef.child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                    final Query lastQuery = reference.child("Shifts").child(data.get(i).getId()+"").orderByKey().limitToLast(1);
+                    lastQuery.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.hasChild(day+"")) {
-                                Toast.makeText(activity, "لقد قمت بتسجيل حضورك اليوم", Toast.LENGTH_SHORT).show();
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int lastShiftForEmp ;
+                            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                lastShiftForEmp= Integer.parseInt(  snap.getKey()+"");
 
                             }
-                            else {
-                                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").setValue(shift);
-                                database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("timeStampAttendance").setValue(ServerValue.TIMESTAMP);
-                                listener.onIntent(data.get(i).getId() , monthInt,dayInt , "imageAttendance");
-
-
-                                rootRef.child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot snapshot) {
-                                        if (snapshot.hasChild("doneTime")) {
-                                        }
-                                        else {
-                                            database.getReference().child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").child("doneTime").setValue(0);
-                                            database.getReference().child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").child("requiredHours").setValue(allHours);
-                                            database.getReference().child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").child("extraTime").setValue(0);
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                countOfHoursTheEmployeesMustWorkEveryMonth(data.get(i).getId(), data.get(i).getDaysNames(), data.get(i).getHoursCount());
-                               }
                         }
-
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        public void onCancelled(DatabaseError databaseError) {
                         }
                     });
+                   // String time= (String) DateFormat.format("HH:mm", date);
 
-
+                    final Shift shift = new Shift(data.get(i).getId(),monthInt,dayInt,0,0,null,null,0);
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    database.getReference().child("Shifts").child(data.get(i).getId()+"").child(lastShiftForEmp +1 +"").setValue(shift);
+                    database.getReference().child("Shifts").child(data.get(i).getId() + "").child(lastShiftForEmp + 1 + "").child("timeStampComing").setValue(ServerValue.TIMESTAMP );
+                   // listener.onIntent(data.get(i).getId() , monthInt,dayInt , "imageAttendance");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -181,7 +147,7 @@ public class HomeRegisterAdapter extends BaseAdapter {
             }
         });
 
-        imgLeft.setOnClickListener(new View.OnClickListener() {
+        btnLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -222,8 +188,8 @@ public class HomeRegisterAdapter extends BaseAdapter {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 long leftTimeStamp = Long.parseLong(dataSnapshot.child("timeStampLeave").getValue().toString());
-                                                long timeStampAttendance = Long.parseLong(dataSnapshot.child("timeStampAttendance").getValue().toString());
-                                                final long differentBetweenTimes = leftTimeStamp - timeStampAttendance ;
+                                                long timeStampComing = Long.parseLong(dataSnapshot.child("timeStampComing").getValue().toString());
+                                                final long differentBetweenTimes = leftTimeStamp - timeStampComing ;
                                                 long differentMinutes =  (differentBetweenTimes/(1000*60));
                                                 database.getReference().child("Shifts").child(data.get(i).getId()+"").child(monthInt+"").child(dayInt+"").child("minutesCountInWork").setValue(differentMinutes);
 
@@ -237,7 +203,7 @@ public class HomeRegisterAdapter extends BaseAdapter {
                                                 database.getReference().child("EmployeesHours").child(data.get(i).getId()+"").child(monthInt+"").
                                                         child("doneTime").setValue(differentBetweenTimes+oldDoneHours);
 
-                                                listener.onIntent(data.get(i).getId() , monthInt,dayInt , "imageLeave");
+                                               // listener.onIntent(data.get(i).getId() , monthInt,dayInt , "imageLeave");
 
 
                                             }
@@ -285,81 +251,6 @@ public class HomeRegisterAdapter extends BaseAdapter {
         return v;
 
     }
-    public void countOfHoursTheEmployeesMustWorkEveryMonth(int id, ArrayList<String> daysNames, int hoursCount) {
-        java.text.DateFormat dateFormat = new SimpleDateFormat("EEE, dd/MM/yyyy");
-        String currentDateAndTime = dateFormat.format(new Date());
-
-        try {
-            Date date = dateFormat.parse(currentDateAndTime);
-            final String year = (String) android.text.format.DateFormat.format("yyy", date);
-            final int yearInt = Integer.parseInt(year);
-            final String month = (String) android.text.format.DateFormat.format("MM", date);
-            final int monthInt = Integer.parseInt(month);
-            // final String day= (String) android.text.format.DateFormat.format("EEEE", date);
-
-            Calendar calendar = new GregorianCalendar(yearInt, monthInt - 1, 1);
-            int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-            for (int i = 1; i <= daysInMonth; i++) {
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DAY_OF_MONTH, i); //Set Day of the Month, 1..31
-                cal.set(Calendar.MONTH, monthInt - 1); //Set month, starts with JANUARY = 0
-                cal.set(Calendar.YEAR, yearInt);
-
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                if (dayOfWeek == 7) {
-                    saturday++;
-                } else if (dayOfWeek == 1) {
-                    sunday++;
-                } else if (dayOfWeek == 2) {
-                    monday++;
-                } else if (dayOfWeek == 3) {
-                    tuesday++;
-                } else if (dayOfWeek == 4) {
-                    wednesday++;
-                } else if (dayOfWeek == 5) {
-                    thursday++;
-                }
-
-            }
-            /*HashMap<String,Integer> countOfDays = new HashMap<>();
-            countOfDays.put("Saturdays",saturday);
-            countOfDays.put("Sundays",sunday);
-            countOfDays.put("Mondays",monday);
-            countOfDays.put("Tuesdays",tuesday);
-            countOfDays.put("Wednesday",wednesday);
-            countOfDays.put("Thursday",thursday);
-
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-            database.getReference().child(year).child(month).setValue(countOfDays); */
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < daysNames.size(); i++) {
-            if (daysNames.get(i).equals("السبت")) {
-                allHours = allHours + (saturday * hoursCount);
-            } else if (daysNames.get(i).equals("الأحد")) {
-                allHours = allHours + (sunday * hoursCount);
-            } else if (daysNames.get(i).equals("الاثنين")) {
-                allHours = allHours + (monday * hoursCount);
-            } else if (daysNames.get(i).equals("الثلاثاء")) {
-                allHours = allHours + (tuesday * hoursCount);
-            } else if (daysNames.get(i).equals("الأربعاء")) {
-                allHours = allHours + (wednesday * hoursCount);
-            } else if (daysNames.get(i).equals("الخميس")) {
-                allHours = allHours + (thursday * hoursCount);
-            }
-        }
-
-
-
-
-    }
-
-
 
 
 

@@ -12,14 +12,25 @@
         tools:layout="@layout/fragment_home"  />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_add_employee"
         android:name="com.apps.almadenahpharmacy.ui.addEmployee.AddEmployeeFragment"
         android:label="إضافة موظف"
         tools:layout="@layout/fragment_add_employee" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_show_employees"
         android:name="com.apps.almadenahpharmacy.ui.employeeRecords.EmployeeRecordsFragment"
         android:label="سجل الموظفين"
         tools:layout="@layout/fragment_employee_records" />
+
+    <fragment
+        android:id="@+id/nav_home_fridays"
+        android:name="com.apps.almadenahpharmacy.ui.homeFridays.HomeFridaysFragment"
+        android:label="دوام الجمعة"
+        tools:layout="@layout/fragment_home_fridays" />
+    <fragment
+        android:id="@+id/nav_show_fridays"
+        android:name="com.apps.almadenahpharmacy.ui.showFridays.ShowFridaysFragment"
+        android:label="عرض دوام الجمعة"
+        tools:layout="@layout/fragment_show_fridays" />
 </navigation>

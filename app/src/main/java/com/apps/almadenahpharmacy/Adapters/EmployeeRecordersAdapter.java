@@ -2,9 +2,12 @@ package com.apps.almadenahpharmacy.Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,7 +33,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class EmployeeRecordersAdapter extends BaseAdapter {
     ArrayList<Employee> data;
@@ -61,20 +68,19 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
         final View v = LayoutInflater.from(activity).inflate(R.layout.raw_record, null, false);
         ImageView imageEmpRec = v.findViewById(R.id.imageEmpRec);
         TextView rowNameEmp = v.findViewById(R.id.rowNameEmp);
-        ImageView butGoToEdit =  v.findViewById(R.id.butGoToEdit);
-        ImageView butDelete =  v.findViewById(R.id.butDelete);
+        ImageView butGoToEdit = v.findViewById(R.id.butGoToEdit);
+        ImageView butDelete = v.findViewById(R.id.butDelete);
         rowNameEmp.setText(data.get(i).getName());
-        if (data.get(i).getGender().equals("أنثى")){
+        if (data.get(i).getGender().equals("أنثى")) {
             imageEmpRec.setImageResource(R.drawable.pharmacist_female);
-        }
-        else if (data.get(i).getGender().equals("ذكر")){
+        } else if (data.get(i).getGender().equals("ذكر")) {
             imageEmpRec.setImageResource(R.drawable.pharmacist_male);
         }
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity, EmployeeDetailsActivity.class);
-                intent.putExtra("employee" , data.get(i));
+                intent.putExtra("employee", data.get(i));
                 activity.startActivity(intent);
             }
         });
@@ -90,7 +96,6 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
 
                 final EditText editNameEditDialog = dialogView.findViewById(R.id.editNameEditDialog);
                 final EditText editHoursCountEditDialog = dialogView.findViewById(R.id.editHoursCountEditDialog);
-                final EditText editDaysCountEditDialog = dialogView.findViewById(R.id.editDaysCountEditDialog);
                 final EditText editExtraHourPriceDialog = dialogView.findViewById(R.id.editExtraHourPriceDialog);
 
                 final CheckBox checkSaturdayEditDialog = dialogView.findViewById(R.id.checkSaturdayEditDialog);
@@ -99,17 +104,24 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                 final CheckBox checkTuesdayEditDialog = dialogView.findViewById(R.id.checkTuesdayEditDialog);
                 final CheckBox checkWednesdayEditDialog = dialogView.findViewById(R.id.checkWednesdayEditDialog);
                 final CheckBox checkThursdayEditDialog = dialogView.findViewById(R.id.checkThursdayEditDialog);
+                final AutoCompleteTextView spinnerComingHourEdit = dialogView.findViewById(R.id.spinnerComingHourEdit);
+                final AutoCompleteTextView spinnerLeftHourEdit = dialogView.findViewById(R.id.spinnerLeftHourEdit);
+                showHoursInSpinner(spinnerComingHourEdit , spinnerLeftHourEdit);
+
 
                 final RadioGroup radioGroupEditDialog = (RadioGroup) dialogView.findViewById(R.id.radioGroupEditDialog);
 
                 final ArrayList<String> days = data.get(i).getDaysNames();
 
                 final int id = data.get(i).getId();
+                final String lastShift = data.get(i).getLastShift();
+                final String lastShiftFriday = data.get(i).getLastShiftFriday();
 
                 editNameEditDialog.setText(data.get(i).getName());
                 editHoursCountEditDialog.setText(data.get(i).getHoursCount() + "");
-                editDaysCountEditDialog.setText(data.get(i).getDaysCount() + "");
                 editExtraHourPriceDialog.setText(data.get(i).getExtraHourPrice() + "");
+                spinnerComingHourEdit.setText(data.get(i).getComingHour() + "");
+                spinnerLeftHourEdit.setText(data.get(i).getLeftHour() + "");
 
                 if (data.get(i).getGender().equals("ذكر")) {
                     radioGroupEditDialog.check(R.id.radioButMaleEdit);
@@ -162,13 +174,29 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
                         if (days.size() > 0) {
                             int selectedId = radioGroupEditDialog.getCheckedRadioButtonId();
                             RadioButton genderRadioButton = (RadioButton) dialogView.findViewById(selectedId);
-                            Employee employee = new Employee(id, editNameEditDialog.getText().toString(), Integer.parseInt(editHoursCountEditDialog.getText().toString()),
-                                    Integer.parseInt(editDaysCountEditDialog.getText().toString()),days, genderRadioButton.getText().toString(),
-                                    Integer.parseInt(editExtraHourPriceDialog.getText().toString()));
+                                Employee employee = new Employee(id, editNameEditDialog.getText().toString(), Integer.parseInt(editHoursCountEditDialog.getText().toString()),
+                                    genderRadioButton.getText().toString(), days,
+                                    Integer.parseInt(editExtraHourPriceDialog.getText().toString()),
+                                        spinnerComingHourEdit.getText().toString(),
+                                        spinnerLeftHourEdit.getText().toString() ,  lastShift ,lastShiftFriday
+                            );
                             database.getReference().child("Employees").child(id + "").setValue(employee).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(activity, "تم تعديل الموظف بنجاح", Toast.LENGTH_SHORT).show();
+
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                    String currentDateAndTime = format.format(new Date());
+                                    Date date = null;
+                                    try {
+                                        date = format.parse(currentDateAndTime);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    final String month = (String) DateFormat.format("MM", date);
+                                    int monthInt = Integer.parseInt(month);
+                                    database.getReference().child("EmployeesHours").child(data.get(i).getId() + "").child(monthInt + "").child("requiredHours").setValue(null);
                                     alertDialog.dismiss();
                                 }
                             });
@@ -222,7 +250,18 @@ public class EmployeeRecordersAdapter extends BaseAdapter {
         });
 
 
-
         return v;
+    }
+
+    public void showHoursInSpinner(AutoCompleteTextView spinnerComingHour, AutoCompleteTextView spinnerLeftHour) {
+        ArrayList<String> hours = new ArrayList<>();
+        for (int i = 1; i <= 24; i++) {
+            hours.add(i+":00");
+        }
+
+        ArrayAdapter adapterHours = new ArrayAdapter(activity, android.R.layout.simple_spinner_item, hours);
+        adapterHours.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerComingHour.setAdapter(adapterHours);
+        spinnerLeftHour.setAdapter(adapterHours);
     }
 }

@@ -9,13 +9,21 @@
             android:icon="@drawable/ic_baseline_home_24"
             android:title="الرئيسية" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_add_employee"
             android:icon="@drawable/ic_baseline_person_add_24"
             android:title="إضافة موظف"
             />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_show_employees"
             android:icon="@drawable/clipboards"
             android:title="سجل الموظفين" />
+        <item
+            android:id="@+id/nav_home_fridays"
+            android:icon="@drawable/ic_friday"
+            android:title="دوام الجمعة" />
+        <item
+            android:id="@+id/nav_show_fridays"
+            android:icon="@drawable/ic_baseline_eye_24"
+            android:title="عرض دوام الجمعة" />
     </group>
 </menu>

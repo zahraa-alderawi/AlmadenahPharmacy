@@ -34,17 +34,22 @@ public class EmployeeShiftsActivity extends AppCompatActivity {
             final ShiftAdapters adapter = new ShiftAdapters(data,this);
          recEmpShifts.setAdapter(adapter);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-         database.getReference().child("Shifts").child(id+"").child(monthInt+"").addValueEventListener(new ValueEventListener() {
+         database.getReference().child("Shifts").child(id+"").addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                  data.clear();
                  for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                     Shift shift= new Shift();
-                     shift.setDay(Integer.parseInt(snapshot.child("day").getValue().toString()));
-                     shift.setMonth(Integer.parseInt(snapshot.child("month").getValue().toString()));
-                     shift.setImageAttendance(snapshot.child("imageAttendance").getValue().toString());
-                     shift.setImageLeave(snapshot.child("imageLeave").getValue().toString());
-                     data.add(shift);
+                     if (Integer.parseInt(snapshot.child("month").getValue().toString())==monthInt){
+                         Shift shift= new Shift();
+                         shift.setDay(Integer.parseInt(snapshot.child("day").getValue().toString()));
+                         shift.setMonth(Integer.parseInt(snapshot.child("month").getValue().toString()));
+                         shift.setTimeStampComing(Long.parseLong(snapshot.child("timeStampComing").getValue().toString()));
+                         shift.setTimeStampLeave(Long.parseLong(snapshot.child("timeStampLeave").getValue().toString()));
+                         shift.setImageLeave(snapshot.child("imageLeave").getValue().toString());
+                         shift.setImageComing(snapshot.child("imageComing").getValue().toString());
+                         data.add(shift);
+
+                     }
 
                  }
                  adapter.notifyDataSetChanged();

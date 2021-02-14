@@ -4,9 +4,10 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="350dp"
     android:layoutDirection="rtl"
     android:orientation="vertical"
+
     android:textDirection="rtl">
 
 
@@ -14,10 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
+        android:layout_weight="1"
         android:backgroundTint="@color/colorYellow"
         app:cardCornerRadius="10dp">
         <TextView
-            android:id="@+id/txtShiftDay"
+            android:id="@+id/txtShiftDayFriday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="التاريخ"
@@ -26,8 +28,6 @@
             android:textSize="20sp"
             android:gravity="center"
             android:layout_marginTop="10dp"/>
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <ImageView
-                                android:id="@+id/imgShiftAttendance"
+                                android:id="@+id/imgShiftAttendanceFriday"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -75,7 +75,7 @@
 
                     </FrameLayout>
                     <TextView
-                        android:id="@+id/timeShiftAttendance"
+                        android:id="@+id/timeShiftAttendanceFriday"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -114,7 +114,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <ImageView
-                                android:id="@+id/imgShiftLeave"
+                                android:id="@+id/imgShiftLeaveFriday"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"
@@ -126,7 +126,7 @@
 
                     </FrameLayout>
                     <TextView
-                        android:id="@+id/timeShiftLeave"
+                        android:id="@+id/timeShiftLeaveFriday"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -139,6 +139,17 @@
 
 
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/txtShiftPriceFriday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:textSize="16sp"
+            />
     </androidx.cardview.widget.CardView>
+
+
+
 </LinearLayout>

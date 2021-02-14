@@ -2,15 +2,13 @@ package com.apps.almadenahpharmacy.Adapters;
 
 import android.app.Activity;
 import android.icu.text.SimpleDateFormat;
-import java.util.Calendar;
 import android.net.Uri;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,16 +17,17 @@ import com.apps.almadenahpharmacy.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class ShiftAdapters extends RecyclerView.Adapter<ShiftAdapters.ShiftViewHolder> {
+public  class FridayShiftAdapter extends RecyclerView.Adapter<FridayShiftAdapter.FridayShiftViewHolder> {
     ArrayList<Shift> data;
     Activity activity ;
 
 
-    public ShiftAdapters(ArrayList<Shift> data , Activity activity) {
+    public FridayShiftAdapter(ArrayList<Shift> data , Activity activity) {
         this.data = data;
         this.activity = activity;
     }
@@ -36,15 +35,15 @@ public class ShiftAdapters extends RecyclerView.Adapter<ShiftAdapters.ShiftViewH
 
     @NonNull
     @Override
-    public ShiftViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_shift,parent,false);
-        ShiftViewHolder shiftHolder = new ShiftViewHolder(v);
+    public FridayShiftViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_friday_shift_details,parent,false);
+        FridayShiftViewHolder shiftHolder = new FridayShiftViewHolder(v);
         return shiftHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ShiftViewHolder holder, int position) {
-         Shift shift = data.get(position);
+    public void onBindViewHolder(@NonNull FridayShiftViewHolder holder, int position) {
+        Shift shift = data.get(position);
         holder.date.setText(shift.getDay()+"/" +shift.getMonth());
         if (shift.getImageComing().equals("")){
             holder.imageAttendance.setImageResource(R.drawable.ph);
@@ -66,8 +65,8 @@ public class ShiftAdapters extends RecyclerView.Adapter<ShiftAdapters.ShiftViewH
         TimeZone tz = TimeZone.getDefault();
         calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        java.util.Date currentTimeZone=new java.util.Date(shift.getTimeStampComing());
-        java.util.Date currentTimeZone2=new java.util.Date(shift.getTimeStampLeave());
+        Date currentTimeZone=new Date(shift.getTimeStampComing());
+        Date currentTimeZone2=new Date(shift.getTimeStampLeave());
         String t  =sdf.format(currentTimeZone) ;
         String t2  =sdf.format(currentTimeZone2) ;
 
@@ -77,31 +76,35 @@ public class ShiftAdapters extends RecyclerView.Adapter<ShiftAdapters.ShiftViewH
             holder.timeLeave.setText(t2);
 
         }
+        holder.txtShiftPriceFriday.setText("الراتب المخصص لهذا اليوم: "+shift.getShiftPrice() +" شيكل");
         holder.shift = shift ;
         holder.po = position ;
     }
+
 
     @Override
     public int getItemCount() {
         return data.size();
     }
 
-     static class  ShiftViewHolder extends  RecyclerView.ViewHolder{
+     static class  FridayShiftViewHolder extends  RecyclerView.ViewHolder{
         TextView date;
         ImageView imageAttendance ;
         ImageView imageLeave ;
         TextView timeComing;
         TextView timeLeave;
+        TextView txtShiftPriceFriday;
         Shift shift ;
         int po;
 
-        public ShiftViewHolder(@NonNull View itemView) {
+        public FridayShiftViewHolder(@NonNull View itemView) {
             super(itemView);
-            date = itemView.findViewById(R.id.txtShiftDay);
-            imageAttendance = itemView.findViewById(R.id.imgShiftAttendance);
-            imageLeave = itemView.findViewById(R.id.imgShiftLeave);
-            timeComing=itemView.findViewById(R.id.timeShiftAttendance);
-            timeLeave=itemView.findViewById(R.id.timeShiftLeave);
+            date = itemView.findViewById(R.id.txtShiftDayFriday);
+            imageAttendance = itemView.findViewById(R.id.imgShiftAttendanceFriday);
+            imageLeave = itemView.findViewById(R.id.imgShiftLeaveFriday);
+            timeComing=itemView.findViewById(R.id.timeShiftAttendanceFriday);
+            timeLeave=itemView.findViewById(R.id.timeShiftLeaveFriday);
+            txtShiftPriceFriday=itemView.findViewById(R.id.txtShiftPriceFriday);
 
         }
     }

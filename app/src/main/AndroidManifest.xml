@@ -19,19 +19,19 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EmployeeShiftsActivity"></activity>
+        <activity android:name=".EmployeeFridaysShiftsActivity"></activity>
+        <activity android:name=".EmployeeShiftsActivity" />
         <activity android:name=".EmployeeDetailsActivity" />
         <activity android:name=".SplashActivity" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-           >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

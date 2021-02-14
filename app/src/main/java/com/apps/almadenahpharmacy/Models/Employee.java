@@ -9,33 +9,72 @@ public class Employee implements Serializable
     int id ;
     String name;
     int hoursCount;
-    int daysCount;
     String gender;
     ArrayList<String> daysNames ;
     int extraHourPrice ;
+    String ComingHour;
+    String LeftHour;
+    String lastShift;
+    String lastShiftFriday;
     public Employee() {
     }
 
 
-    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames, String gender,int extraHourPrice) {
+    public Employee(int id, String name, int hoursCount,  String gender, ArrayList<String> daysNames, int extraHourPrice, String comingHour, String leftHour , String lastShift , String lastShiftFriday) {
         this.id = id;
         this.name = name;
         this.hoursCount = hoursCount;
-        this.daysCount = daysCount;
-        this.daysNames = daysNames;
         this.gender = gender;
+        this.daysNames = daysNames;
         this.extraHourPrice = extraHourPrice;
+        this.ComingHour = comingHour;
+        this.LeftHour = leftHour;
+        this.lastShift = lastShift;
+        this.lastShiftFriday = lastShiftFriday;
     }
-    public Employee(int id, String name, int hoursCount, int daysCount, ArrayList<String> daysNames, String gender) {
+
+    public Employee(int id, String name, int hoursCount, String gender, ArrayList<String> daysNames, int extraHourPrice, String comingHour, String leftHour) {
         this.id = id;
         this.name = name;
         this.hoursCount = hoursCount;
-        this.daysCount = daysCount;
-        this.daysNames = daysNames;
         this.gender = gender;
+        this.daysNames = daysNames;
+        this.extraHourPrice = extraHourPrice;
+        ComingHour = comingHour;
+        LeftHour = leftHour;
     }
 
+    public String getLastShiftFriday() {
+        return lastShiftFriday;
+    }
 
+    public void setLastShiftFriday(String lastShiftFriday) {
+        this.lastShiftFriday = lastShiftFriday;
+    }
+
+    public String getLastShift() {
+        return lastShift;
+    }
+
+    public void setLastShift(String lastShift) {
+        this.lastShift = lastShift;
+    }
+
+    public String getComingHour() {
+        return ComingHour;
+    }
+
+    public void setComingHour(String comingHour) {
+        ComingHour = comingHour;
+    }
+
+    public String getLeftHour() {
+        return LeftHour;
+    }
+
+    public void setLeftHour(String leftHour) {
+        LeftHour = leftHour;
+    }
 
     public int getExtraHourPrice() {
         return extraHourPrice;
@@ -75,14 +114,6 @@ public class Employee implements Serializable
 
     public void setHoursCount(int hoursCount) {
         this.hoursCount = hoursCount;
-    }
-
-    public int getDaysCount() {
-        return daysCount;
-    }
-
-    public void setDaysCount(int daysCount) {
-        this.daysCount = daysCount;
     }
 
     public ArrayList<String> getDaysNames() {

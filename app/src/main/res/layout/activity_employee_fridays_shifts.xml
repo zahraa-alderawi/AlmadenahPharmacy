@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textDirection="rtl"
-    android:layoutDirection="rtl"
-    tools:context=".EmployeeShiftsActivity">
-
+    tools:context=".EmployeeFridaysShiftsActivity">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recEmpShifts"
+        android:id="@+id/recEmployeeFridaysShifts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </LinearLayout>

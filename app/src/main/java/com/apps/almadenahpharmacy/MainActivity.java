@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
@@ -36,13 +37,16 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_add_employee, R.id.nav_show_employees, R.id.nav_home_fridays , R.id.nav_show_fridays)
                 .setDrawerLayout(drawer)
                 .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(false);
+       // navigationView.getMenu().findItem(R.id.nav_slideshow).setVisible(false);
         navigationView.getMenu().findItem(R.id.nav_home).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -50,18 +54,32 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        navigationView.getMenu().findItem(R.id.nav_gallery).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        navigationView.getMenu().findItem(R.id.nav_add_employee).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                collapsingToolbarLayout.setTitle("اضافة موظف");
+                collapsingToolbarLayout.setTitle("إضافة موظف");
                 return false;
             }
         });
 
-        navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        navigationView.getMenu().findItem(R.id.nav_show_employees).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 collapsingToolbarLayout.setTitle("سجل الموظفين");
+                return false;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.nav_home_fridays).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                collapsingToolbarLayout.setTitle("دوام الجمعة");
+                return false;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.nav_show_fridays).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                collapsingToolbarLayout.setTitle("عرض دوام الجمعة");
                 return false;
             }
         });

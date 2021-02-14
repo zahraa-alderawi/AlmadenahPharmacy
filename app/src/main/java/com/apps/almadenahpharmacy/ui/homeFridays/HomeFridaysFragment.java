@@ -1,32 +1,21 @@
-package com.apps.almadenahpharmacy.ui.home;
+package com.apps.almadenahpharmacy.ui.homeFridays;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.webkit.MimeTypeMap;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,9 +27,8 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.apps.almadenahpharmacy.Adapters.HomeFridaysRegisterAdapter;
 import com.apps.almadenahpharmacy.Adapters.HomeRegisterAdapter;
-import com.apps.almadenahpharmacy.Adapters.RegisterAdapter;
-import com.apps.almadenahpharmacy.EmployeeDetailsActivity;
 import com.apps.almadenahpharmacy.MainActivity;
 import com.apps.almadenahpharmacy.Models.Employee;
 import com.apps.almadenahpharmacy.OnIntentReceived;
@@ -57,58 +45,35 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.TimeZone;
 
 
-public class HomeFragment extends Fragment implements  OnIntentReceived {
+public class HomeFridaysFragment extends Fragment implements  OnIntentReceived {
 
-    private HomeViewModel homeViewModel;
+    private HomeFridaysViewModel homeViewModel;
     Uri uri;
     public static final int CAMERA_PERM_CODE = 101;
     public static final int CAMERA_REQUEST_CODE = 102;
-    public static final int GALLERY_REQUEST_CODE = 105;
     String currentPhotoPath;
     StorageReference storageReference;
-    Uri uriImage ;
     int empId ;
-   String shiftKey;
+    String shiftKey ;
     String shiftImageType;
-    ProgressBar progressBar ;
-    LinearLayout linearHome ;
     View dialogView ;
     AlertDialog.Builder builder;
     AlertDialog alertDialog ;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+                ViewModelProviders.of(this).get(HomeFridaysViewModel.class);
 
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1);
         checkPermission(Manifest.permission.CAMERA, 2);
-        boolean autoTime = isTimeAutomatic(getActivity());
-        if (autoTime==false){
-            Toast.makeText(getActivity(), "يجب تغيير اعدادات الوقت في الجهاز ليصبح أوتوماتيكياً", Toast.LENGTH_SHORT).show();
-            getActivity().finish();
-        }
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        // To Know is it GMT +2 or GMT+3
-      /*  DateFormat date = new SimpleDateFormat("z",Locale.getDefault());
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"),
-                Locale.getDefault());
-        Date currentLocalTime = calendar.getTime();
-        String localTime = date.format(currentLocalTime);
-        Toast.makeText(getActivity(), localTime+"", Toast.LENGTH_SHORT).show(); */
+        View root = inflater.inflate(R.layout.fragment_home_fridays, container, false);
 
-        ListView gridEmpRegister = root.findViewById(R.id.gridEmpRegister);
+        ListView gridEmpRegister = root.findViewById(R.id.gridEmpRegisterFridays);
          dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_loading, null, false);
          builder = new AlertDialog.Builder(getActivity());
          builder.setView(dialogView);
@@ -119,7 +84,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         final ArrayList<Employee> data = new ArrayList<>();
-        final RegisterAdapter adapter = new RegisterAdapter(data, getActivity(), HomeFragment.this);
+        final HomeFridaysRegisterAdapter adapter = new HomeFridaysRegisterAdapter(data, getActivity(), HomeFridaysFragment.this);
         gridEmpRegister.setAdapter(adapter);
         database.getReference().child("Employees").addValueEventListener(new ValueEventListener() {
             @Override
@@ -130,12 +95,9 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
                     employee.setId(Integer.parseInt(snapshot.child("id").getValue().toString()));
                     employee.setName(snapshot.child("name").getValue().toString());
                     employee.setGender(snapshot.child("gender").getValue().toString());
-                    employee.setHoursCount(Integer.parseInt(snapshot.child("hoursCount").getValue().toString()));
-                    employee.setComingHour(snapshot.child("comingHour").getValue().toString());
-                    employee.setLeftHour(snapshot.child("leftHour").getValue().toString());
-                    employee.setDaysNames((ArrayList<String>) snapshot.child("daysNames").getValue());
-                    employee.setLastShift(snapshot.child("lastShift").getValue().toString());
                     employee.setLastShiftFriday(snapshot.child("lastShiftFriday").getValue().toString());
+                    employee.setHoursCount(Integer.parseInt(snapshot.child("hoursCount").getValue().toString()));
+                    employee.setDaysNames((ArrayList<String>) snapshot.child("daysNames").getValue());
                     data.add(employee);
 
                 }
@@ -175,7 +137,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
         shiftImageType = imageType ;
         askCameraPermissions();
         alertDialog.show();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.setCancelable(false);
 
     }
@@ -269,7 +231,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
                     @Override
                     public void onSuccess(Uri uri) {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        database.getReference().child("Shifts").child(empId+"").
+                        database.getReference().child("FridaysShifts").child(empId+"").
                                 child(shiftKey).child(shiftImageType).setValue(uri+"");
                         alertDialog.dismiss();
 
@@ -289,13 +251,7 @@ public class HomeFragment extends Fragment implements  OnIntentReceived {
     }
 
 
-    public static boolean isTimeAutomatic(Context c) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
-        } else {
-            return android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.AUTO_TIME, 0) == 1;
-        }
-    }
+
 
 
 }
